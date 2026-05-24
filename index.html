@@ -1,376 +1,1398 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arghadip Mustafi - Cyber Security Portfolio</title>
-    
+    <title>Arghadip Mustafi — Cyber Security Portfolio</title>
+    <meta name="description" content="MSc Cyber Security graduate & Implementation Consultant. Specialising in penetration testing, secure workflow automation, and SaaS integration.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ── Reset & Base ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #080d12;
+            --bg2:       #0d1520;
+            --surface:   #111c27;
+            --surface2:  #162030;
+            --red:       #ff4655;
+            --red-dim:   rgba(255,70,85,0.15);
+            --red-glow:  rgba(255,70,85,0.35);
+            --cyan:      #00d4ff;
+            --cyan-dim:  rgba(0,212,255,0.12);
+            --text:      #dde6ee;
+            --muted:     #7a92a8;
+            --border:    rgba(255,255,255,0.07);
+            --font-head: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ── Custom Cursor ── */
+        #cursor-dot {
+            width: 6px; height: 6px;
+            background: var(--red);
+            border-radius: 50%;
+            position: fixed; z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%,-50%);
+            transition: transform 0.1s, opacity 0.3s;
+        }
+        #cursor-ring {
+            width: 32px; height: 32px;
+            border: 1px solid rgba(255,70,85,0.5);
+            border-radius: 50%;
+            position: fixed; z-index: 9998;
+            pointer-events: none;
+            transform: translate(-50%,-50%);
+            transition: transform 0.12s ease, width 0.2s, height 0.2s, border-color 0.2s;
+        }
+        body:has(a:hover) #cursor-ring,
+        body:has(button:hover) #cursor-ring {
+            width: 48px; height: 48px;
+            border-color: var(--red);
+        }
+
+        /* ── Canvas ── */
+        #bg-canvas {
+            position: fixed; inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
+
+        /* ── Layout Wrapper ── */
+        .page { position: relative; z-index: 1; }
+
+        /* ── Clip Utils ── */
+        .clip-br { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%); }
+        .clip-tl { clip-path: polygon(18px 0, 100% 0, 100% 100%, 0 100%, 0 18px); }
+        .clip-both { clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px); }
+
+        /* ── Glitch Effect ── */
+        .glitch {
+            position: relative;
+            animation: glitch-flicker 6s infinite;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute; left: 0; top: 0;
+            width: 100%; height: 100%;
+        }
+        .glitch::before {
+            color: var(--cyan);
+            animation: glitch-top 6s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+        }
+        .glitch::after {
+            color: var(--red);
+            animation: glitch-bot 6s infinite;
+            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+        }
+        @keyframes glitch-flicker {
+            0%,94%,100% { opacity: 1; }
+            95% { opacity: 0.85; }
+            96% { opacity: 1; }
+            97% { opacity: 0.9; }
+        }
+        @keyframes glitch-top {
+            0%,94%,100% { transform: none; opacity: 0; }
+            95% { transform: translate(-3px, -2px); opacity: 0.7; }
+            96% { transform: translate(3px, 2px); opacity: 0; }
+        }
+        @keyframes glitch-bot {
+            0%,96%,100% { transform: none; opacity: 0; }
+            97% { transform: translate(3px, 2px); opacity: 0.7; }
+            98% { transform: translate(-3px, -1px); opacity: 0; }
+        }
+
+        /* ── Scan line ── */
+        .scanline {
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+            pointer-events: none; z-index: 10;
+        }
+
+        /* ── Scroll Reveal ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s cubic-bezier(.22,1,.36,1), transform 0.6s cubic-bezier(.22,1,.36,1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+        .reveal-left  { transform: translateX(-28px) translateY(0); }
+        .reveal-right { transform: translateX(28px) translateY(0); }
+        .reveal-left.visible, .reveal-right.visible { transform: none; }
+
+        /* stagger children */
+        .stagger > * { opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s; }
+        .stagger.visible > *:nth-child(1) { opacity:1;transform:none;transition-delay:.05s }
+        .stagger.visible > *:nth-child(2) { opacity:1;transform:none;transition-delay:.12s }
+        .stagger.visible > *:nth-child(3) { opacity:1;transform:none;transition-delay:.19s }
+        .stagger.visible > *:nth-child(4) { opacity:1;transform:none;transition-delay:.26s }
+        .stagger.visible > *:nth-child(5) { opacity:1;transform:none;transition-delay:.33s }
+        .stagger.visible > *:nth-child(6) { opacity:1;transform:none;transition-delay:.40s }
+        .stagger.visible > *:nth-child(7) { opacity:1;transform:none;transition-delay:.47s }
+        .stagger.visible > *:nth-child(8) { opacity:1;transform:none;transition-delay:.54s }
+
+        /* ── Section Label ── */
+        .sec-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--red);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+        .sec-title {
+            font-family: var(--font-head);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #fff;
+        }
+
+        /* ── Glow border ── */
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: '';
+            position: absolute; inset: -1px;
+            background: linear-gradient(135deg, var(--red), transparent 50%, var(--cyan));
+            opacity: 0;
+            transition: opacity 0.4s;
+            border-radius: inherit;
+            z-index: -1;
+        }
+        .glow-border:hover::before { opacity: 1; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 clamp(1rem,4vw,3rem);
+            height: 56px;
+            background: rgba(8,13,18,0.7);
+            backdrop-filter: blur(16px) saturate(1.4);
+            border-bottom: 1px solid var(--border);
+            transition: box-shadow 0.3s;
+        }
+        nav.scrolled { box-shadow: 0 4px 32px rgba(0,0,0,0.5); }
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--red);
+            letter-spacing: 0.1em;
+        }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute; bottom: -4px; left: 0; right: 0;
+            height: 1px;
+            background: var(--red);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a:hover::after { transform: scaleX(1); }
+        @media(max-width:640px){ .nav-links { display: none; } }
+
+        /* ── HERO ── */
+        #hero {
+            min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: clamp(5rem,10vw,8rem) clamp(1.5rem,6vw,5rem) 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--red);
+            letter-spacing: 0.25em;
+            margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 0.75rem;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            display: block; width: 32px; height: 1px;
+            background: var(--red);
+        }
+        .hero-name {
+            font-family: var(--font-head);
+            font-size: clamp(3.5rem, 9vw, 8rem);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .hero-name .accent { color: var(--red); }
+        .hero-role {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+            color: var(--cyan);
+            margin: 1.25rem 0 0.5rem;
+            min-height: 1.5em;
+        }
+        .hero-role .cursor-blink {
+            display: inline-block;
+            width: 2px; height: 1.1em;
+            background: var(--cyan);
+            margin-left: 3px;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .hero-sub {
+            font-size: 0.9rem;
+            color: var(--muted);
+            max-width: 520px;
+            line-height: 1.7;
+            margin: 1rem 0 2.5rem;
+        }
+        .hero-cta {
+            display: flex; flex-wrap: wrap; gap: 1rem;
+        }
+        .btn {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 0.7rem 1.8rem;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            transition: all 0.25s;
+            cursor: none;
+        }
+        .btn-primary {
+            background: var(--red);
+            color: #fff;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        .btn-primary:hover {
+            background: #ff6370;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--red-glow);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        .btn-outline:hover {
+            border-color: var(--red);
+            color: var(--red);
+            transform: translateY(-2px);
+        }
+        .hero-stats {
+            display: flex; flex-wrap: wrap; gap: 2.5rem;
+            margin-top: 3.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .hero-stat-num {
+            font-family: var(--font-head);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+        .hero-stat-num span { color: var(--red); }
+        .hero-stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+        .hero-corner {
+            position: absolute; top: 0; left: 0;
+            width: 80px; height: 80px;
+            border-top: 2px solid var(--red);
+            border-left: 2px solid var(--red);
+        }
+        .hero-corner-br {
+            position: absolute; bottom: 4rem; right: clamp(1.5rem,4vw,4rem);
+            width: 48px; height: 48px;
+            border-bottom: 1px solid rgba(255,70,85,0.4);
+            border-right: 1px solid rgba(255,70,85,0.4);
+        }
+        .scroll-hint {
+            position: absolute; bottom: 2rem; left: 50%;
+            transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            animation: bounce-hint 2s ease-in-out infinite;
+        }
+        .scroll-hint-arrow {
+            width: 1px; height: 32px;
+            background: linear-gradient(to bottom, transparent, var(--red));
+        }
+        @keyframes bounce-hint {
+            0%,100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(6px); }
+        }
+
+        /* ── SECTIONS shared ── */
+        section { padding: clamp(4rem,8vw,7rem) clamp(1.5rem,6vw,5rem); }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-header { margin-bottom: 3rem; }
+
+        /* ── ABOUT / PROFILE ── */
+        #about .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media(max-width:768px){ #about .about-grid { grid-template-columns: 1fr; } }
+        .about-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .about-card:hover {
+            border-color: rgba(255,70,85,0.35);
+            box-shadow: 0 0 32px rgba(255,70,85,0.08);
+        }
+        .about-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--red), transparent);
+        }
+        .about-text {
+            grid-column: span 2;
+            font-size: 0.95rem;
+            line-height: 1.85;
+            color: var(--muted);
+        }
+        @media(max-width:768px){ .about-text { grid-column: span 1; } }
+        .about-text strong { color: var(--text); font-weight: 500; }
+
+        /* ── EXPERIENCE ── */
+        #experience { background: var(--bg2); }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute; left: 0; top: 8px; bottom: 8px;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--red), rgba(255,70,85,0.1));
+        }
+        .tl-item {
+            position: relative;
+            padding: 0 0 3rem 2rem;
+        }
+        .tl-item:last-child { padding-bottom: 0; }
+        .tl-dot {
+            position: absolute; left: -2rem;
+            width: 12px; height: 12px;
+            top: 6px;
+            background: var(--red);
+            clip-path: polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+            transform: translateX(-5px);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .tl-item:hover .tl-dot {
+            transform: translateX(-5px) scale(1.4);
+            box-shadow: 0 0 12px var(--red-glow);
+        }
+        .tl-dot.inactive { background: #2a3a4a; }
+        .tl-meta {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--red);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.4rem;
+        }
+        .tl-title {
+            font-family: var(--font-head);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .tl-company {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--cyan);
+            margin: 0.1rem 0 0.75rem;
+        }
+        .tl-list {
+            list-style: none;
+            space-y: 0.35rem;
+        }
+        .tl-list li {
+            font-size: 0.875rem;
+            color: var(--muted);
+            padding-left: 1.2rem;
+            position: relative;
+            margin-bottom: 0.4rem;
+            line-height: 1.65;
+        }
+        .tl-list li::before {
+            content: '▸';
+            position: absolute; left: 0;
+            color: var(--red);
+            font-size: 0.7rem;
+            top: 0.15rem;
+        }
+
+        /* ── EDUCATION ── */
+        .edu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .edu-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+            transform-style: preserve-3d;
+        }
+        .edu-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,70,85,0.4);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 24px rgba(255,70,85,0.08);
+        }
+        .edu-card::after {
+            content: '';
+            position: absolute; top: 0; right: 0;
+            width: 18px; height: 18px;
+            background: var(--red);
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+        }
+        .edu-degree {
+            font-family: var(--font-head);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.3rem;
+        }
+        .edu-school {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--cyan);
+            margin-bottom: 0.6rem;
+        }
+        .edu-meta {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+        .edu-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--red);
+            border: 1px solid var(--red);
+            padding: 0.15rem 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .edu-modules {
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            padding-top: 0.75rem;
+        }
+
+        /* ── BENTO SKILLS ── */
+        #skills { background: var(--bg2); }
+        .bento {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-auto-rows: minmax(80px, auto);
+            gap: 1rem;
+        }
+        @media(max-width:900px){ .bento { grid-template-columns: repeat(3,1fr); } }
+        @media(max-width:560px){ .bento { grid-template-columns: repeat(2,1fr); } }
+
+        .bento-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .bento-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255,70,85,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 16px rgba(255,70,85,0.07);
+        }
+        .bento-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,70,85,0.06) 0%, transparent 65%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .bento-card:hover::before { opacity: 1; }
+
+        .bento-span2 { grid-column: span 2; }
+        .bento-span3 { grid-column: span 3; }
+        .bento-tall   { grid-row: span 2; }
+
+        .bento-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--red);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+        }
+        .bento-title {
+            font-family: var(--font-head);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.75rem;
+        }
+
+        .skill-chip {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.65rem;
+            margin: 0.2rem;
+            letter-spacing: 0.06em;
+            clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+            transition: all 0.2s;
+            cursor: default;
+        }
+        .skill-chip:hover {
+            background: var(--red-dim);
+            border-color: var(--red);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .skill-chip.highlight {
+            border-color: rgba(255,70,85,0.4);
+            color: var(--red);
+        }
+
+        /* Skill bars */
+        .skill-bar-row { margin-bottom: 0.75rem; }
+        .skill-bar-top {
+            display: flex; justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+        .skill-bar-track {
+            height: 3px;
+            background: rgba(255,255,255,0.06);
+            overflow: hidden;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red), var(--cyan));
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 1s cubic-bezier(.22,1,.36,1);
+        }
+        .skill-bar-fill.animated { transform: scaleX(1); }
+
+        /* Hex icon */
+        .hex-icon {
+            width: 48px; height: 48px;
+            clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+            background: var(--red-dim);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+        .hex-icon svg { width: 22px; height: 22px; color: var(--red); }
+
+        /* ── CTF ── */
+        .ctf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+        .ctf-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .ctf-card::after {
+            content: '';
+            position: absolute; left: 0; top: 0;
+            width: 2px; height: 0;
+            background: var(--red);
+            transition: height 0.4s cubic-bezier(.22,1,.36,1);
+        }
+        .ctf-card:hover::after { height: 100%; }
+        .ctf-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,70,85,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+        }
+        .ctf-tag {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--cyan);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .ctf-title {
+            font-family: var(--font-head);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .ctf-desc {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+        .ctf-pills {
+            display: flex; flex-wrap: wrap; gap: 0.35rem;
+            margin-top: 1rem;
+        }
+        .ctf-pill {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--red);
+            border: 1px solid rgba(255,70,85,0.3);
+            padding: 0.15rem 0.5rem;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            padding: 3rem clamp(1.5rem,6vw,5rem);
+            position: relative; z-index: 1;
+        }
+        .footer-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; flex-wrap: wrap;
+            justify-content: space-between; align-items: center;
+            gap: 2rem;
+        }
+        .footer-info p {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+        .footer-info a { color: var(--red); text-decoration: none; }
+        .footer-links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .footer-link {
+            font-family: var(--font-head);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--muted);
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--border);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            transition: all 0.25s;
+        }
+        .footer-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .footer-link:hover {
+            color: #fff;
+            border-color: var(--red);
+            box-shadow: 0 0 16px rgba(255,70,85,0.2);
+        }
+        .footer-copy {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            color: rgba(255,255,255,0.15);
+            text-align: center;
+            margin-top: 2rem;
+            letter-spacing: 0.12em;
+        }
+
+        /* ── Print ── */
+        @media print {
+            canvas, nav, #cursor-dot, #cursor-ring, .scroll-hint, .hero-corner, .hero-corner-br { display: none !important; }
+            body { background: #fff; color: #000; cursor: auto; }
+            section { padding: 1.5rem 1rem; }
+            .about-card, .edu-card, .bento-card, .ctf-card { border: 1px solid #ccc; clip-path: none; }
+            .sec-title { color: #000; }
+            * { box-shadow: none !important; animation: none !important; transition: none !important; }
+            .reveal { opacity: 1; transform: none; }
+        }
+
+        /* ── Noise overlay ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 0; opacity: 0.35;
+        }
+
+        /* ── Animated gradient border ── */
+        .grad-border {
+            position: relative;
+        }
+        .grad-border::after {
+            content: '';
+            position: absolute; inset: 0;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--red), transparent 40%, var(--cyan) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+        .grad-border:hover::after { opacity: 1; }
+
+        /* ── Active nav indicator ── */
+        .nav-links a.active { color: var(--red); }
+        .nav-links a.active::after { transform: scaleX(1); }
+    </style>
+</head>
+<body>
+    <!-- Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Particle Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="page">
+
+    <!-- NAV -->
+    <nav id="main-nav">
+        <span class="nav-logo">&lt;AM /&gt;</span>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#ctf">CTF</a></li>
+        </ul>
+        <button onclick="window.print()" class="btn btn-primary" style="font-size:0.75rem;padding:0.45rem 1.1rem;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            Export CV
+        </button>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="scanline"></div>
+        <div class="hero-corner"></div>
+        <div class="hero-corner-br"></div>
+
+        <p class="hero-eyebrow reveal">Cyber Security Portfolio</p>
+
+        <h1 class="hero-name reveal" style="transition-delay:0.08s">
+            <span class="glitch" data-text="ARGHADIP">ARGHADIP</span><br>
+            <span class="accent glitch" data-text="MUSTAFI">MUSTAFI</span>
+        </h1>
+
+        <p class="hero-role reveal" style="transition-delay:0.16s">
+            &gt;&nbsp;<span id="typewriter"></span><span class="cursor-blink"></span>
+        </p>
+
+        <p class="hero-sub reveal" style="transition-delay:0.22s">
+            MSc Cyber Security (Distinction) · Implementation Consultant · Penetration tester, forensics analyst, and secure workflow engineer bridging the gap between technical security and business delivery.
+        </p>
+
+        <div class="hero-cta reveal" style="transition-delay:0.28s">
+            <a href="#experience" class="btn btn-primary">View Experience</a>
+            <button onclick="window.print()" class="btn btn-outline">Download CV</button>
+        </div>
+
+        <div class="hero-stats reveal stagger" style="transition-delay:0.35s">
+            <div>
+                <div class="hero-stat-num"><span class="count-up" data-target="3">0</span><span>+</span></div>
+                <div class="hero-stat-label">Years in Industry</div>
+            </div>
+            <div>
+                <div class="hero-stat-num"><span class="count-up" data-target="73">0</span><span>%</span></div>
+                <div class="hero-stat-label">MSc Score</div>
+            </div>
+            <div>
+                <div class="hero-stat-num"><span class="count-up" data-target="3">0</span><span></span></div>
+                <div class="hero-stat-label">CTF Competitions</div>
+            </div>
+            <div>
+                <div class="hero-stat-num"><span class="count-up" data-target="8">0</span><span>+</span></div>
+                <div class="hero-stat-label">Security Tools</div>
+            </div>
+        </div>
+
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-hint-arrow"></div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <p class="sec-label">01 // Profile</p>
+                <h2 class="sec-title">About Me</h2>
+            </div>
+
+            <div class="about-grid stagger reveal">
+                <p class="about-text">
+                    MSc Cyber Security graduate with <strong>Distinction</strong> from King's College London, combining hands-on expertise in <strong>penetration testing, network analysis, and digital forensics</strong> with commercial experience as an Implementation Consultant at Enate. I bridge the gap between technical security requirements and business operational goals — whether that's engineering secure workflow automation, scoping solutions in pre-sales, or conducting quantum-fingerprinting research.
+                </p>
+
+                <div class="about-card">
+                    <div class="hex-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </div>
+                    <div class="bento-title">Security Specialist</div>
+                    <p style="font-size:0.8rem;color:var(--muted);line-height:1.6">Pen testing · Forensics · Network hardening · Cryptography · OSINT</p>
+                </div>
+
+                <div class="about-card">
+                    <div class="hex-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    </div>
+                    <div class="bento-title">Engineer</div>
+                    <p style="font-size:0.8rem;color:var(--muted);line-height:1.6">Workflow automation · API integration · Snaplogic · Power Automate · Docker</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <p class="sec-label">02 // Career</p>
+                <h2 class="sec-title">Work Experience</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="tl-item reveal">
+                    <div class="tl-dot"></div>
+                    <div class="tl-meta">02/2026 — Present</div>
+                    <div class="tl-title">Implementation Consultant</div>
+                    <div class="tl-company">Enate · London, UK</div>
+                    <ul class="tl-list">
+                        <li>Designed and engineered integrations with legacy systems to automate business workflow management.</li>
+                        <li>Developed and deployed Snaplogic and Power Automate pipelines to transform dataflow to upstream systems.</li>
+                        <li>Collaborated with cross-functional teams for solution deployment and integration.</li>
+                        <li>Communicated effectively to senior stakeholders regarding relevant business KPIs.</li>
+                    </ul>
+                </div>
+
+                <div class="tl-item reveal" style="transition-delay:0.1s">
+                    <div class="tl-dot inactive"></div>
+                    <div class="tl-meta">04/2025 — 11/2025</div>
+                    <div class="tl-title">Student Researcher</div>
+                    <div class="tl-company">King's College London · London, UK</div>
+                    <ul class="tl-list">
+                        <li>Project Focus: Biometric Authentication using Quantum Fingerprinting (supervised by Prof. Tasmina Islam).</li>
+                        <li>Developing a quantum fingerprinting-based biometric authentication system resistant to quantum computing attacks.</li>
+                    </ul>
+                </div>
+
+                <div class="tl-item reveal" style="transition-delay:0.18s">
+                    <div class="tl-dot inactive"></div>
+                    <div class="tl-meta">11/2024 — 11/2025</div>
+                    <div class="tl-title">Student Ambassador</div>
+                    <div class="tl-company">King's College London · Cyber Security Department</div>
+                    <ul class="tl-list">
+                        <li>Delivered engaging campus tours and presentations demonstrating the ability to communicate value.</li>
+                        <li>Acted as brand representative for the Cyber Security department, handling pre-sales objection scenarios.</li>
+                    </ul>
+                </div>
+
+                <div class="tl-item reveal" style="transition-delay:0.26s">
+                    <div class="tl-dot inactive"></div>
+                    <div class="tl-meta">04/2023 — 08/2024</div>
+                    <div class="tl-title">Solutions Consultant</div>
+                    <div class="tl-company">Enate · London, UK</div>
+                    <ul class="tl-list">
+                        <li>Engineered and automated key business workflows, reducing manual intervention.</li>
+                        <li>Provided deep technical expertise during pre-sales, focusing on automated orchestration solutions.</li>
+                        <li>Developed technical documentation, RFPs, POCs, and client presentations.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <p class="sec-label">03 // Academia</p>
+                <h2 class="sec-title">Education</h2>
+            </div>
+
+            <div class="edu-grid stagger reveal">
+                <div class="edu-card grad-border">
+                    <div class="edu-degree">MSc Cyber Security</div>
+                    <div class="edu-school">King's College London — London, UK</div>
+                    <div class="edu-meta">09/2024 – 11/2025 &nbsp;·&nbsp; Score: 73/100</div>
+                    <span class="edu-badge">Distinction</span>
+                    <div class="edu-modules">
+                        Security &amp; Penetration Testing · Network Security Hardening · Computer Forensics · Cryptography
+                    </div>
+                </div>
+
+                <div class="edu-card grad-border">
+                    <div class="edu-degree">B.Tech Computer Science Engineering</div>
+                    <div class="edu-school">Techno India Salt Lake — Kolkata, India</div>
+                    <div class="edu-meta">11/2020 – 06/2023 &nbsp;·&nbsp; Score: 8.42/10</div>
+                    <span class="edu-badge">Distinction</span>
+                </div>
+
+                <div class="edu-card grad-border">
+                    <div class="edu-degree">Diploma in Computer Science Engineering</div>
+                    <div class="edu-school">SCM Institute of Technology — Kolkata, India</div>
+                    <div class="edu-meta">11/2017 – 06/2019 &nbsp;·&nbsp; Score: 74.2/100</div>
+                    <span class="edu-badge">Distinction</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS BENTO -->
+    <section id="skills">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <p class="sec-label">04 // Arsenal</p>
+                <h2 class="sec-title">Tech Stack</h2>
+            </div>
+
+            <div class="bento reveal stagger">
+
+                <!-- Cloud & Infra — wide -->
+                <div class="bento-card bento-span3">
+                    <div class="bento-label">Cloud &amp; Infrastructure</div>
+                    <div>
+                        <span class="skill-chip">Azure (Entra ID)</span>
+                        <span class="skill-chip">AWS</span>
+                        <span class="skill-chip">GCP</span>
+                        <span class="skill-chip">Docker</span>
+                        <span class="skill-chip">SIEM</span>
+                        <span class="skill-chip">Snaplogic</span>
+                        <span class="skill-chip">Power Automate</span>
+                    </div>
+                </div>
+
+                <!-- Security Tools — wide -->
+                <div class="bento-card bento-span3">
+                    <div class="bento-label">Security Tools</div>
+                    <div>
+                        <span class="skill-chip highlight">Splunk</span>
+                        <span class="skill-chip highlight">Burp Suite</span>
+                        <span class="skill-chip highlight">Metasploit</span>
+                        <span class="skill-chip highlight">Nessus</span>
+                        <span class="skill-chip highlight">Nmap</span>
+                        <span class="skill-chip highlight">Wireshark</span>
+                        <span class="skill-chip highlight">Autopsy</span>
+                    </div>
+                </div>
+
+                <!-- Skill bars — tall -->
+                <div class="bento-card bento-span2 bento-tall">
+                    <div class="bento-label">Proficiency</div>
+                    <div id="skill-bars">
+                        <div class="skill-bar-row">
+                            <div class="skill-bar-top"><span>Penetration Testing</span><span>88%</span></div>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="0.88"></div></div>
+                        </div>
+                        <div class="skill-bar-row">
+                            <div class="skill-bar-top"><span>Network Security</span><span>82%</span></div>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="0.82"></div></div>
+                        </div>
+                        <div class="skill-bar-row">
+                            <div class="skill-bar-top"><span>Python / Bash</span><span>80%</span></div>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="0.80"></div></div>
+                        </div>
+                        <div class="skill-bar-row">
+                            <div class="skill-bar-top"><span>Digital Forensics</span><span>76%</span></div>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="0.76"></div></div>
+                        </div>
+                        <div class="skill-bar-row">
+                            <div class="skill-bar-top"><span>Cloud Security</span><span>70%</span></div>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="0.70"></div></div>
+                        </div>
+                        <div class="skill-bar-row">
+                            <div class="skill-bar-top"><span>Workflow Automation</span><span>90%</span></div>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" data-pct="0.90"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Languages -->
+                <div class="bento-card bento-span2">
+                    <div class="bento-label">Languages &amp; DB</div>
+                    <div>
+                        <span class="skill-chip">Python</span>
+                        <span class="skill-chip">Bash</span>
+                        <span class="skill-chip">Java</span>
+                        <span class="skill-chip">SQL</span>
+                        <span class="skill-chip">C/C++</span>
+                    </div>
+                </div>
+
+                <!-- GRC -->
+                <div class="bento-card bento-span2">
+                    <div class="bento-label">GRC &amp; Compliance</div>
+                    <div>
+                        <span class="skill-chip highlight">ISO 27001</span>
+                        <span class="skill-chip highlight">GDPR</span>
+                        <span class="skill-chip">RFP / SOW</span>
+                        <span class="skill-chip">Tech Scoping</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTF -->
+    <section id="ctf">
+        <div class="section-inner">
+            <div class="section-header reveal">
+                <p class="sec-label">05 // Combat Log</p>
+                <h2 class="sec-title">CTF Competitions</h2>
+            </div>
+
+            <div class="ctf-grid stagger reveal">
+                <div class="ctf-card">
+                    <div class="ctf-tag">Global · 36hr</div>
+                    <div class="ctf-title">Singapore Students Merger CTF</div>
+                    <div class="ctf-desc">Completed a 36-hour global Capture The Flag event solving challenges across multiple domains in a competitive international environment.</div>
+                    <div class="ctf-pills">
+                        <span class="ctf-pill">Steganography</span>
+                        <span class="ctf-pill">Network Analysis</span>
+                        <span class="ctf-pill">Reverse Engineering</span>
+                    </div>
+                </div>
+
+                <div class="ctf-card">
+                    <div class="ctf-tag">UCL · London</div>
+                    <div class="ctf-title">Portico Hack (UCL)</div>
+                    <div class="ctf-desc">University College London CTF competition tackling advanced challenges across intelligence gathering and binary exploitation.</div>
+                    <div class="ctf-pills">
+                        <span class="ctf-pill">Cryptography</span>
+                        <span class="ctf-pill">OSINT</span>
+                        <span class="ctf-pill">Binary Exploitation</span>
+                        <span class="ctf-pill">Vuln Analysis</span>
+                    </div>
+                </div>
+
+                <div class="ctf-card">
+                    <div class="ctf-tag">KCL · London</div>
+                    <div class="ctf-title">Hack The Lion (KCL)</div>
+                    <div class="ctf-desc">King's College London red/blue team simulation — attack and defense scenarios in a live competitive environment.</div>
+                    <div class="ctf-pills">
+                        <span class="ctf-pill">Web Exploitation</span>
+                        <span class="ctf-pill">Forensics</span>
+                        <span class="ctf-pill">Reverse Engineering</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-info">
+                <p><a href="mailto:arghadipmustafi98@gmail.com">arghadipmustafi98@gmail.com</a></p>
+                <p>07587 676 056 &nbsp;·&nbsp; London, UK</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://www.linkedin.com/in/arghadipmustafi/" target="_blank" rel="noopener" class="footer-link">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    LinkedIn
+                </a>
+                <a href="https://github.com/Arghadip28" target="_blank" rel="noopener" class="footer-link">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    GitHub
+                </a>
+                <a href="https://profile.hackthebox.com/profile/019e5773-4506-71f2-90b3-9357eca4d60d" target="_blank" rel="noopener" class="footer-link">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    HackTheBox
+                </a>
+            </div>
+        </div>
+        <p class="footer-copy">© 2026 Arghadip Mustafi — Built with pure HTML/CSS/JS</p>
+    </footer>
+
+    </div><!-- .page -->
+
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'cyber-bg': '#0f1923', /* Dark atmospheric background */
-                        'cyber-surface': '#1f2937',
-                        'cyber-red': '#ff4655', /* High-impact accent */
-                        'cyber-text': '#ece8e1',
-                        'cyber-muted': '#8b97a2'
-                    },
-                    fontFamily: {
-                        'heading': ['Rajdhani', 'sans-serif'],
-                        'mono': ['Share Tech Mono', 'monospace'],
-                    },
-                    backgroundImage: {
-                        'grid-pattern': "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z\" fill=\"%23ff4655\" fill-opacity=\"0.03\" fill-rule=\"evenodd\"/%3E%3C/svg%3E')",
+    /* ── Cursor ── */
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+        dot.style.left  = mx + 'px'; dot.style.top  = my + 'px';
+        rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    /* ── Particle Canvas ── */
+    (function(){
+        const canvas = document.getElementById('bg-canvas');
+        const ctx    = canvas.getContext('2d');
+        let W, H, nodes = [], raf;
+        const NODE_COUNT = 55;
+        const MAX_DIST   = 130;
+
+        function resize() {
+            W = canvas.width  = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        for (let i = 0; i < NODE_COUNT; i++) {
+            nodes.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                vx: (Math.random() - 0.5) * 0.28,
+                vy: (Math.random() - 0.5) * 0.28,
+                r: Math.random() * 1.4 + 0.6
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            // update
+            nodes.forEach(n => {
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+            });
+            // edges
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i+1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const d  = Math.sqrt(dx*dx + dy*dy);
+                    if (d < MAX_DIST) {
+                        const a = (1 - d / MAX_DIST) * 0.25;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255,70,85,${a})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.stroke();
                     }
                 }
             }
+            // dots
+            nodes.forEach(n => {
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(255,70,85,0.55)';
+                ctx.fill();
+            });
+            raf = requestAnimationFrame(draw);
         }
-    </script>
+        draw();
+    })();
 
-    <style>
-        /* Base Styles & Custom Scrollbar */
-        body { 
-            font-family: 'Share Tech Mono', monospace; 
-            background-color: #0f1923; 
-            color: #ece8e1; 
-        }
-        h1, h2, h3, h4 { 
-            font-family: 'Rajdhani', sans-serif; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em;
-        }
-        
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f1923; }
-        ::-webkit-scrollbar-thumb { background: #ff4655; border-radius: 4px; }
+    /* ── Nav scroll ── */
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+        // Active link
+        const sections = document.querySelectorAll('section[id]');
+        let current = '';
+        sections.forEach(s => {
+            if (window.scrollY >= s.offsetTop - 100) current = s.id;
+        });
+        document.querySelectorAll('.nav-links a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+        });
+    }, { passive: true });
 
-        /* Gamified UI Cuts & Edges */
-        .clip-card {
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        }
-        .clip-button {
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: all 0.3s ease;
-        }
-        .clip-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 70, 85, 0.4);
-        }
-
-        /* Achievement Badges */
-        .skill-badge {
-            clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
-            transition: all 0.2s ease;
-        }
-        .skill-badge:hover {
-            background-color: #ff4655;
-            color: #0f1923;
-            transform: scale(1.05);
-        }
-
-        /* Collapsible Animations */
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, opacity 0.3s ease;
-            opacity: 0;
-        }
-        .collapsible-content.active {
-            max-height: 2000px; /* High enough to fit content */
-            opacity: 1;
-            padding-bottom: 1rem;
-        }
-        .chevron { transition: transform 0.3s ease; }
-        .chevron.active { transform: rotate(180deg); }
-
-        /* Print Mode Optimization */
-        @media print {
-            body { background: white; color: black; }
-            .bg-grid-pattern { background-image: none; }
-            .no-print { display: none !important; }
-            .collapsible-content { max-height: none !important; opacity: 1 !important; overflow: visible !important; }
-            .clip-card, .clip-button, .skill-badge { clip-path: none; border: 1px solid #ccc; }
-            .text-cyber-red, .bg-cyber-red { color: #000; background: transparent; border: 1px solid #000; }
-            .text-cyber-muted { color: #555; }
-            .bg-cyber-surface { background: #f9f9f9; }
-            * { box-shadow: none !important; text-shadow: none !important; }
-        }
-    </style>
-</head>
-<body class="bg-grid-pattern relative min-h-screen p-4 md:p-8 lg:p-12">
-
-    <header class="max-w-5xl mx-auto mb-10 relative">
-        <div class="absolute top-0 left-0 w-16 h-1 bg-cyber-red no-print"></div>
-        <div class="absolute top-0 left-0 w-1 h-16 bg-cyber-red no-print"></div>
-        
-        <div class="pt-8 pb-4 pl-6 md:flex md:justify-between md:items-end border-b border-cyber-surface">
-            <div>
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-wider">ARGHADIP <span class="text-cyber-red">MUSTAFI</span></h1>
-                <h2 class="text-xl md:text-2xl text-cyber-muted font-heading mb-4">> Implementation Consultant @ Enate<span class="text-xs text-cyber-surface align-top"></span></h2>
-                <h2 class="text-xl md:text-2xl text-cyber-muted font-heading mb-4">> MSc Cyber Security Graduate @ King's College London</h2>
-            </div>
-            
-            <div class="text-l text-cyber-muted md:text-right space-y-1 mb-4">
-                <p><a href="mailto:arghadipmustafi98@gmail.com">arghadipmustafi98@gmail.com</a><span class="text-xs align-top"></span></p>
-                <p>07587676056</p>
-                <p>London, UK</p>
-            </div>
-        </div>
-
-        <div class="flex gap-4 mt-6 pl-6 no-print">
-            <button onclick="window.print()" class="clip-button bg-cyber-red text-white font-heading font-bold py-2 px-6 tracking-wide flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                PRINT CV
-            </button>
-        </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <div class="lg:col-span-2 space-y-8">
-            
-            <section class="bg-cyber-surface p-6 clip-card border-l-4 border-cyber-red">
-                <h3 class="text-2xl text-white font-bold mb-4 flex items-center gap-2">
-                    <span class="text-cyber-red">01 //</span> PROFILE
-                </h3>
-                <p class="text-cyber-text leading-relaxed">
-                    MSc Cyber Security graduate (Distinction) with a strong background in technical pre-sales and solution implementation. Combines practical expertise in secure workflow automation, SaaS integration, and network analysis with commercial experience in client delivery. Adept at bridging the gap between technical security requirements and business operational goals. Seeking a challenging role that leverages both technical acumen and client-facing skills to drive secure, efficient digital transformation.
-                </p>
-            </section>
-
-            <section class="bg-cyber-surface clip-card">
-                <button onclick="toggleSection('exp-content', 'exp-chevron')" class="w-full p-6 flex justify-between items-center text-left hover:bg-gray-800 transition-colors">
-                    <h3 class="text-2xl text-white font-bold flex items-center gap-2">
-                        <span class="text-cyber-red">02 //</span> WORK EXPERIENCE
-                    </h3>
-                    <svg id="exp-chevron" class="chevron w-6 h-6 text-cyber-red no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                
-                <div id="exp-content" class="collapsible-content active px-6">
-                    <div class="space-y-6 border-l-2 border-gray-700 ml-3 pl-6 relative">
-                        
-                        <div class="relative">
-                            <div class="absolute w-3 h-3 bg-cyber-red -left-[1.65rem] top-1.5 rotate-45"></div>
-                            <h4 class="text-xl text-white font-bold">Implementation Consultant <span class="text-cyber-muted font-mono text-sm">| Enate</span> <span class="text-xs text-cyber-surface align-top">[cite: 53]</span></h4>
-                            <p class="text-cyber-red text-sm mb-2">02/2026 - Present <span class="text-xs text-cyber-surface align-top"></span></p>
-                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
-                                <li>Designed and engineered integrations with legacy systems to automate business workflow management.</li>
-                                <li>Developed and deployed Snaplogic and Power Automate pipelines to transform dataflow to upstream systems.</li>
-                                <li>Collaborated with multiple cross functional teams for solution deployment and integration.</li>
-                                <li>Communicated effectively to senior stakeholders regarding relevant business KPIs.</li>
-                            </ul>
-                        </div>
-
-                        <div class="relative">
-                            <div class="absolute w-3 h-3 bg-gray-500 -left-[1.65rem] top-1.5 rotate-45"></div>
-                            <h4 class="text-xl text-white font-bold">Student Researcher <span class="text-cyber-muted font-mono text-sm">| King's College London</span> <span class="text-xs text-cyber-surface align-top">[cite: 58]</span></h4>
-                            <p class="text-cyber-red text-sm mb-2">04/2025 - 11/2025</p>
-                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
-                                <li>Project Focus: Biometric Authentication using Quantum Fingerprinting (Supervised by Prof. Tasmina Islam).</li>
-                                <li>Advanced Threat Defense: Developing a quantum fingerprinting-based biometric authentication system resistant to quantum computing attacks.</li>
-                            </ul>
-                        </div>
-
-                        <div class="relative">
-                            <div class="absolute w-3 h-3 bg-gray-500 -left-[1.65rem] top-1.5 rotate-45"></div>
-                            <h4 class="text-xl text-white font-bold">Student Ambassador <span class="text-cyber-muted font-mono text-sm">| King's College London</span> <span class="text-xs text-cyber-surface align-top">[cite: 62]</span></h4>
-                            <p class="text-cyber-red text-sm mb-2">11/2024 - 11/2025</p>
-                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
-                                <li>Delivered engaging campus tours and presentations, demonstrating the ability to communicate value.</li>
-                                <li>Acted as a brand representative for the Cyber Security department, mirroring pre-sales objection handling.</li>
-                            </ul>
-                        </div>
-
-                        <div class="relative">
-                            <div class="absolute w-3 h-3 bg-gray-500 -left-[1.65rem] top-1.5 rotate-45"></div>
-                            <h4 class="text-xl text-white font-bold">Solutions Consultant <span class="text-cyber-muted font-mono text-sm">| Enate</span> <span class="text-xs text-cyber-surface align-top">[cite: 67]</span></h4>
-                            <p class="text-cyber-red text-sm mb-2">04/2023 - 08/2024 <span class="text-xs text-cyber-surface align-top"></span></p>
-                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
-                                <li>Engineered and automated key business workflows, reducing manual intervention.</li>
-                                <li>Provided deep technical expertise during pre-sales, focusing on automated orchestration solutions.</li>
-                                <li>Developed technical documentation, RFPS, POCs and presentations.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-cyber-surface clip-card">
-                <button onclick="toggleSection('edu-content', 'edu-chevron')" class="w-full p-6 flex justify-between items-center text-left hover:bg-gray-800 transition-colors">
-                    <h3 class="text-2xl text-white font-bold flex items-center gap-2">
-                        <span class="text-cyber-red">03 //</span> EDUCATION
-                    </h3>
-                    <svg id="edu-chevron" class="chevron w-6 h-6 text-cyber-red no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                
-                <div id="edu-content" class="collapsible-content px-6">
-                     <div class="space-y-6 pb-4">
-                        
-                        <div class="p-4 border border-gray-700 bg-opacity-50 hover:border-cyber-red transition-colors">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-lg font-bold text-white">MSC Cyber Security</h4>
-                                    <p class="text-cyber-muted text-sm">King's College London (London, UK)</p>
-                                </div>
-                                <span class="text-cyber-red font-bold text-sm bg-red-900 bg-opacity-30 px-2 py-1">Distinction</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">09/2024 - 11/2025 | Score: 73/100</p>
-                            <p class="text-sm mt-2 text-cyber-text">Modules: Security & Penetration Testing, Network Security Hardening, Computer Forensics, Cryptography.</p>
-                        </div>
-
-                        <div class="p-4 border border-gray-700 bg-opacity-50 hover:border-cyber-red transition-colors">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-lg font-bold text-white">B.Tech in Computer Science Engineering</h4>
-                                    <p class="text-cyber-muted text-sm">Techno India Salt Lake (Kolkata, India)</span></p>
-                                </div>
-                                <span class="text-cyber-red font-bold text-sm bg-red-900 bg-opacity-30 px-2 py-1">Distinction</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">11/2020 - 06/2023 | Score: 8.42/10</p>
-                        </div>
-
-                        <div class="p-4 border border-gray-700 bg-opacity-50 hover:border-cyber-red transition-colors">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h4 class="text-lg font-bold text-white">Diploma in Computer Science Engineering</h4>
-                                    <p class="text-cyber-muted text-sm">SCM Institute of Technology (Kolkata, India)</span></p>
-                                </div>
-                                <span class="text-cyber-red font-bold text-sm bg-red-900 bg-opacity-30 px-2 py-1">Distinction</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">11/2017 - 06/2019 | Score: 74.2/100</p>
-                        </div>
-
-                     </div>
-                </div>
-            </section>
-        </div>
-
-        <div class="space-y-8">
-            
-            <section class="bg-cyber-surface p-6 clip-card border-t-4 border-cyber-red">
-                <h3 class="text-2xl text-white font-bold mb-4 flex items-center gap-2">
-                    <span class="text-cyber-red">04 //</span> TECH STACK
-                </h3>
-                
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">CLOUD & INFRA</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Azure (Entra ID)</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">AWS</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">GCP</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Docker</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">SIEM</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">SECURITY TOOLS</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Splunk</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Nessus</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Nmap</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Wireshark</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Burp Suite</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Metasploit</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Autopsy</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">LANGUAGES & DB</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Python</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Bash</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Java</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">SQL</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">C/C++</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">GRC & PRE-SALES</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text border border-cyber-red">ISO 27001</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text border border-cyber-red">GDPR</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">RFP/SOW</span>
-                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Tech Scoping</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-cyber-surface p-6 clip-card">
-                <h3 class="text-2xl text-white font-bold mb-4 flex items-center gap-2">
-                    <span class="text-cyber-red">05 //</span> CTF COMBAT
-                </h3>
-                <div class="space-y-4">
-                    <div class="hover:border-l-2 hover:border-cyber-red hover:pl-2 transition-all">
-                        <h4 class="text-white font-bold text-sm">Singapore Students Merger CTF</h4>
-                        <p class="text-xs text-cyber-muted">Completed a 36-hour global CTF solving Steganography, network analysis, and reverse engineering.</p>
-                    </div>
-                    <div class="hover:border-l-2 hover:border-cyber-red hover:pl-2 transition-all">
-                        <h4 class="text-white font-bold text-sm">Portico Hack (UCL)</h4>
-                        <p class="text-xs text-cyber-muted">Tackled Cryptography, OSINT, binary exploration and vulnerability analysis.</p>
-                    </div>
-                    <div class="hover:border-l-2 hover:border-cyber-red hover:pl-2 transition-all">
-                        <h4 class="text-white font-bold text-sm">Hack The Lion (KCL)</h4>
-                        <p class="text-xs text-cyber-muted">Stimulated real world cyber attack/defense, working on web exploration, forensics and reverse engineering.</p>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    </main>
-
-    <script>
-        // Smooth Collapsible Logic
-        function toggleSection(contentId, chevronId) {
-            const content = document.getElementById(contentId);
-            const chevron = document.getElementById(chevronId);
-            
-            if (content.classList.contains('active')) {
-                content.classList.remove('active');
-                chevron.classList.remove('active');
-            } else {
-                content.classList.add('active');
-                chevron.classList.add('active');
+    /* ── Scroll Reveal ── */
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                // animate skill bars when section enters view
+                if (e.target.id === 'skills' || e.target.closest('#skills')) {
+                    animateBars();
+                }
             }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .stagger').forEach(el => observer.observe(el));
+    // also observe section for skill bars
+    const skillsSection = document.getElementById('skills');
+    if (skillsSection) observer.observe(skillsSection);
+
+    /* ── Skill Bars ── */
+    let barsAnimated = false;
+    function animateBars() {
+        if (barsAnimated) return;
+        barsAnimated = true;
+        document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+            bar.style.transform = `scaleX(${bar.dataset.pct})`;
+            bar.classList.add('animated');
+        });
+    }
+
+    /* ── Typewriter ── */
+    const roles = [
+        'Implementation Consultant @ Enate',
+        'MSc Cyber Security — Distinction',
+        'Penetration Tester',
+        'Digital Forensics Analyst',
+        'Secure Workflow Engineer',
+    ];
+    let ri = 0, ci = 0, deleting = false;
+    const tw = document.getElementById('typewriter');
+    function typeStep() {
+        const target = roles[ri];
+        if (!deleting) {
+            tw.textContent = target.slice(0, ++ci);
+            if (ci === target.length) { deleting = true; setTimeout(typeStep, 2200); return; }
+            setTimeout(typeStep, 42);
+        } else {
+            tw.textContent = target.slice(0, --ci);
+            if (ci === 0) { deleting = false; ri = (ri+1) % roles.length; setTimeout(typeStep, 300); return; }
+            setTimeout(typeStep, 22);
         }
+    }
+    typeStep();
+
+    /* ── Count-Up ── */
+    const counterObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            const el     = e.target;
+            const target = +el.dataset.target;
+            const dur    = 1400;
+            const start  = performance.now();
+            function tick(now) {
+                const t = Math.min((now - start) / dur, 1);
+                const ease = 1 - Math.pow(1 - t, 3);
+                el.textContent = Math.round(ease * target);
+                if (t < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+            counterObs.unobserve(el);
+        });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.count-up').forEach(el => counterObs.observe(el));
+
+    /* ── Bento card mouse-glow ── */
+    document.querySelectorAll('.bento-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const r   = card.getBoundingClientRect();
+            const x   = ((e.clientX - r.left) / r.width  * 100).toFixed(1);
+            const y   = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+            card.style.setProperty('--mx', x + '%');
+            card.style.setProperty('--my', y + '%');
+        });
+    });
+
+    /* ── 3D tilt on edu cards ── */
+    document.querySelectorAll('.edu-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const r    = card.getBoundingClientRect();
+            const xPct = (e.clientX - r.left) / r.width  - 0.5;
+            const yPct = (e.clientY - r.top)  / r.height - 0.5;
+            card.style.transform = `translateY(-4px) rotateY(${xPct*8}deg) rotateX(${-yPct*8}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+
+    /* ── Hero initial animate ── */
+    window.addEventListener('load', () => {
+        document.querySelectorAll('#hero .reveal').forEach(el => {
+            el.classList.add('visible');
+        });
+    });
     </script>
 </body>
-
-
-<footer class="max-w-5xl mx-auto mt-8 mb-12 flex flex-wrap justify-center gap-4 md:gap-6 no-print">
-        
-        <a href="https://www.linkedin.com/in/arghadipmustafi/" target="_blank" rel="noopener noreferrer" class="clip-button bg-cyber-surface text-cyber-text hover:text-white font-heading font-bold py-3 px-6 flex items-center gap-3 border border-gray-700 hover:border-cyber-red transition-all group">
-            <svg class="w-5 h-5 text-cyber-muted group-hover:text-cyber-red transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-            LINKEDIN
-        </a>
-        
-        <a href="https://github.com/Arghadip28" target="_blank" rel="noopener noreferrer" class="clip-button bg-cyber-surface text-cyber-text hover:text-white font-heading font-bold py-3 px-6 flex items-center gap-3 border border-gray-700 hover:border-cyber-red transition-all group">
-            <svg class="w-5 h-5 text-cyber-muted group-hover:text-cyber-red transition-colors" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            GITHUB
-        </a>
-
-        <a href="https://profile.hackthebox.com/profile/019e5773-4506-71f2-90b3-9357eca4d60d" target="_blank" rel="noopener noreferrer" class="clip-button bg-cyber-surface text-cyber-text hover:text-white font-heading font-bold py-3 px-6 flex items-center gap-3 border border-gray-700 hover:border-cyber-red transition-all group">
-            <svg class="w-5 h-5 text-cyber-muted group-hover:text-cyber-red transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
-            HACKTHEBOX
-        </a>
-        
-    </footer>
-
-
 </html>
