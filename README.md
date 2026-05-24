@@ -1,1 +1,378 @@
 # arghadipmustafi.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arghadip Mustafi - Cyber Security Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-bg': '#0f1923', /* Dark atmospheric background */
+                        'cyber-surface': '#1f2937',
+                        'cyber-red': '#ff4655', /* High-impact accent */
+                        'cyber-text': '#ece8e1',
+                        'cyber-muted': '#8b97a2'
+                    },
+                    fontFamily: {
+                        'heading': ['Rajdhani', 'sans-serif'],
+                        'mono': ['Share Tech Mono', 'monospace'],
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z\" fill=\"%23ff4655\" fill-opacity=\"0.03\" fill-rule=\"evenodd\"/%3E%3C/svg%3E')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Styles & Custom Scrollbar */
+        body { 
+            font-family: 'Share Tech Mono', monospace; 
+            background-color: #0f1923; 
+            color: #ece8e1; 
+        }
+        h1, h2, h3, h4 { 
+            font-family: 'Rajdhani', sans-serif; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f1923; }
+        ::-webkit-scrollbar-thumb { background: #ff4655; border-radius: 4px; }
+
+        /* Gamified UI Cuts & Edges */
+        .clip-card {
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+        }
+        .clip-button {
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: all 0.3s ease;
+        }
+        .clip-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 70, 85, 0.4);
+        }
+
+        /* Achievement Badges */
+        .skill-badge {
+            clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+            transition: all 0.2s ease;
+        }
+        .skill-badge:hover {
+            background-color: #ff4655;
+            color: #0f1923;
+            transform: scale(1.05);
+        }
+
+        /* Collapsible Animations */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .collapsible-content.active {
+            max-height: 2000px; /* High enough to fit content */
+            opacity: 1;
+            padding-bottom: 1rem;
+        }
+        .chevron { transition: transform 0.3s ease; }
+        .chevron.active { transform: rotate(180deg); }
+
+        /* Print Mode Optimization */
+        @media print {
+            body { background: white; color: black; }
+            .bg-grid-pattern { background-image: none; }
+            .no-print { display: none !important; }
+            .collapsible-content { max-height: none !important; opacity: 1 !important; overflow: visible !important; }
+            .clip-card, .clip-button, .skill-badge { clip-path: none; border: 1px solid #ccc; }
+            .text-cyber-red, .bg-cyber-red { color: #000; background: transparent; border: 1px solid #000; }
+            .text-cyber-muted { color: #555; }
+            .bg-cyber-surface { background: #f9f9f9; }
+            * { box-shadow: none !important; text-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-grid-pattern relative min-h-screen p-4 md:p-8 lg:p-12">
+
+    <header class="max-w-5xl mx-auto mb-10 relative">
+        <div class="absolute top-0 left-0 w-16 h-1 bg-cyber-red no-print"></div>
+        <div class="absolute top-0 left-0 w-1 h-16 bg-cyber-red no-print"></div>
+        
+        <div class="pt-8 pb-4 pl-6 md:flex md:justify-between md:items-end border-b border-cyber-surface">
+            <div>
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-2 tracking-wider">ARGHADIP <span class="text-cyber-red">MUSTAFI</span></h1>
+                <h2 class="text-xl md:text-2xl text-cyber-muted font-heading mb-4">> Implementation Consultant @ Enate<span class="text-xs text-cyber-surface align-top"></span></h2>
+                <h2 class="text-xl md:text-2xl text-cyber-muted font-heading mb-4">> MSc Cyber Security Graduate @ King's College London</h2>
+            </div>
+            
+            <div class="text-l text-cyber-muted md:text-right space-y-1 mb-4">
+                <p><a href="mailto:arghadipmustafi98@gmail.com">arghadipmustafi98@gmail.com</a><span class="text-xs align-top"></span></p>
+                <p>07587676056</p>
+                <p>London, UK</p>
+            </div>
+        </div>
+
+        <div class="flex gap-4 mt-6 pl-6 no-print">
+            <button onclick="window.print()" class="clip-button bg-cyber-red text-white font-heading font-bold py-2 px-6 tracking-wide flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                PRINT CV
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-8">
+            
+            <section class="bg-cyber-surface p-6 clip-card border-l-4 border-cyber-red">
+                <h3 class="text-2xl text-white font-bold mb-4 flex items-center gap-2">
+                    <span class="text-cyber-red">01 //</span> PROFILE
+                </h3>
+                <p class="text-cyber-text leading-relaxed">
+                    MSc Cyber Security graduate (Distinction) with a strong background in technical pre-sales and solution implementation. Combines practical expertise in secure workflow automation, SaaS integration, and network analysis with commercial experience in client delivery. Adept at bridging the gap between technical security requirements and business operational goals. Seeking a challenging role that leverages both technical acumen and client-facing skills to drive secure, efficient digital transformation.
+                </p>
+            </section>
+
+            <section class="bg-cyber-surface clip-card">
+                <button onclick="toggleSection('exp-content', 'exp-chevron')" class="w-full p-6 flex justify-between items-center text-left hover:bg-gray-800 transition-colors">
+                    <h3 class="text-2xl text-white font-bold flex items-center gap-2">
+                        <span class="text-cyber-red">02 //</span> WORK EXPERIENCE
+                    </h3>
+                    <svg id="exp-chevron" class="chevron w-6 h-6 text-cyber-red no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                
+                <div id="exp-content" class="collapsible-content active px-6">
+                    <div class="space-y-6 border-l-2 border-gray-700 ml-3 pl-6 relative">
+                        
+                        <div class="relative">
+                            <div class="absolute w-3 h-3 bg-cyber-red -left-[1.65rem] top-1.5 rotate-45"></div>
+                            <h4 class="text-xl text-white font-bold">Implementation Consultant <span class="text-cyber-muted font-mono text-sm">| Enate</span> <span class="text-xs text-cyber-surface align-top">[cite: 53]</span></h4>
+                            <p class="text-cyber-red text-sm mb-2">02/2026 - Present <span class="text-xs text-cyber-surface align-top"></span></p>
+                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
+                                <li>Designed and engineered integrations with legacy systems to automate business workflow management.</li>
+                                <li>Developed and deployed Snaplogic and Power Automate pipelines to transform dataflow to upstream systems.</li>
+                                <li>Collaborated with multiple cross functional teams for solution deployment and integration.</li>
+                                <li>Communicated effectively to senior stakeholders regarding relevant business KPIs.</li>
+                            </ul>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute w-3 h-3 bg-gray-500 -left-[1.65rem] top-1.5 rotate-45"></div>
+                            <h4 class="text-xl text-white font-bold">Student Researcher <span class="text-cyber-muted font-mono text-sm">| King's College London</span> <span class="text-xs text-cyber-surface align-top">[cite: 58]</span></h4>
+                            <p class="text-cyber-red text-sm mb-2">04/2025 - 11/2025</p>
+                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
+                                <li>Project Focus: Biometric Authentication using Quantum Fingerprinting (Supervised by Prof. Tasmina Islam).</li>
+                                <li>Advanced Threat Defense: Developing a quantum fingerprinting-based biometric authentication system resistant to quantum computing attacks.</li>
+                            </ul>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute w-3 h-3 bg-gray-500 -left-[1.65rem] top-1.5 rotate-45"></div>
+                            <h4 class="text-xl text-white font-bold">Student Ambassador <span class="text-cyber-muted font-mono text-sm">| King's College London</span> <span class="text-xs text-cyber-surface align-top">[cite: 62]</span></h4>
+                            <p class="text-cyber-red text-sm mb-2">11/2024 - 11/2025</p>
+                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
+                                <li>Delivered engaging campus tours and presentations, demonstrating the ability to communicate value.</li>
+                                <li>Acted as a brand representative for the Cyber Security department, mirroring pre-sales objection handling.</li>
+                            </ul>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute w-3 h-3 bg-gray-500 -left-[1.65rem] top-1.5 rotate-45"></div>
+                            <h4 class="text-xl text-white font-bold">Solutions Consultant <span class="text-cyber-muted font-mono text-sm">| Enate</span> <span class="text-xs text-cyber-surface align-top">[cite: 67]</span></h4>
+                            <p class="text-cyber-red text-sm mb-2">04/2023 - 08/2024 <span class="text-xs text-cyber-surface align-top"></span></p>
+                            <ul class="list-disc list-inside text-cyber-text space-y-1 text-sm marker:text-cyber-red">
+                                <li>Engineered and automated key business workflows, reducing manual intervention.</li>
+                                <li>Provided deep technical expertise during pre-sales, focusing on automated orchestration solutions.</li>
+                                <li>Developed technical documentation, RFPS, POCs and presentations.</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-cyber-surface clip-card">
+                <button onclick="toggleSection('edu-content', 'edu-chevron')" class="w-full p-6 flex justify-between items-center text-left hover:bg-gray-800 transition-colors">
+                    <h3 class="text-2xl text-white font-bold flex items-center gap-2">
+                        <span class="text-cyber-red">03 //</span> EDUCATION
+                    </h3>
+                    <svg id="edu-chevron" class="chevron w-6 h-6 text-cyber-red no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                
+                <div id="edu-content" class="collapsible-content px-6">
+                     <div class="space-y-6 pb-4">
+                        
+                        <div class="p-4 border border-gray-700 bg-opacity-50 hover:border-cyber-red transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">MSC Cyber Security</h4>
+                                    <p class="text-cyber-muted text-sm">King's College London (London, UK)</p>
+                                </div>
+                                <span class="text-cyber-red font-bold text-sm bg-red-900 bg-opacity-30 px-2 py-1">Distinction</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">09/2024 - 11/2025 | Score: 73/100</p>
+                            <p class="text-sm mt-2 text-cyber-text">Modules: Security & Penetration Testing, Network Security Hardening, Computer Forensics, Cryptography.</p>
+                        </div>
+
+                        <div class="p-4 border border-gray-700 bg-opacity-50 hover:border-cyber-red transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">B.Tech in Computer Science Engineering</h4>
+                                    <p class="text-cyber-muted text-sm">Techno India Salt Lake (Kolkata, India)</span></p>
+                                </div>
+                                <span class="text-cyber-red font-bold text-sm bg-red-900 bg-opacity-30 px-2 py-1">Distinction</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">11/2020 - 06/2023 | Score: 8.42/10</p>
+                        </div>
+
+                        <div class="p-4 border border-gray-700 bg-opacity-50 hover:border-cyber-red transition-colors">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Diploma in Computer Science Engineering</h4>
+                                    <p class="text-cyber-muted text-sm">SCM Institute of Technology (Kolkata, India)</span></p>
+                                </div>
+                                <span class="text-cyber-red font-bold text-sm bg-red-900 bg-opacity-30 px-2 py-1">Distinction</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">11/2017 - 06/2019 | Score: 74.2/100</p>
+                        </div>
+
+                     </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="space-y-8">
+            
+            <section class="bg-cyber-surface p-6 clip-card border-t-4 border-cyber-red">
+                <h3 class="text-2xl text-white font-bold mb-4 flex items-center gap-2">
+                    <span class="text-cyber-red">04 //</span> TECH STACK
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">CLOUD & INFRA</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Azure (Entra ID)</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">AWS</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">GCP</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Docker</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">SIEM</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">SECURITY TOOLS</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Splunk</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Nessus</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Nmap</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Wireshark</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Burp Suite</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Metasploit</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Autopsy</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">LANGUAGES & DB</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Python</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Bash</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Java</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">SQL</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">C/C++</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm text-cyber-muted mb-2 border-b border-gray-700 pb-1">GRC & PRE-SALES</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text border border-cyber-red">ISO 27001</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text border border-cyber-red">GDPR</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">RFP/SOW</span>
+                            <span class="skill-badge bg-gray-800 text-xs px-3 py-1 text-cyber-text">Tech Scoping</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-cyber-surface p-6 clip-card">
+                <h3 class="text-2xl text-white font-bold mb-4 flex items-center gap-2">
+                    <span class="text-cyber-red">05 //</span> CTF COMBAT
+                </h3>
+                <div class="space-y-4">
+                    <div class="hover:border-l-2 hover:border-cyber-red hover:pl-2 transition-all">
+                        <h4 class="text-white font-bold text-sm">Singapore Students Merger CTF</h4>
+                        <p class="text-xs text-cyber-muted">Completed a 36-hour global CTF solving Steganography, network analysis, and reverse engineering.</p>
+                    </div>
+                    <div class="hover:border-l-2 hover:border-cyber-red hover:pl-2 transition-all">
+                        <h4 class="text-white font-bold text-sm">Portico Hack (UCL)</h4>
+                        <p class="text-xs text-cyber-muted">Tackled Cryptography, OSINT, binary exploration and vulnerability analysis.</p>
+                    </div>
+                    <div class="hover:border-l-2 hover:border-cyber-red hover:pl-2 transition-all">
+                        <h4 class="text-white font-bold text-sm">Hack The Lion (KCL)</h4>
+                        <p class="text-xs text-cyber-muted">Stimulated real world cyber attack/defense, working on web exploration, forensics and reverse engineering.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Smooth Collapsible Logic
+        function toggleSection(contentId, chevronId) {
+            const content = document.getElementById(contentId);
+            const chevron = document.getElementById(chevronId);
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                chevron.classList.remove('active');
+            } else {
+                content.classList.add('active');
+                chevron.classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+
+<footer class="max-w-5xl mx-auto mt-8 mb-12 flex flex-wrap justify-center gap-4 md:gap-6 no-print">
+        
+        <a href="YOUR_LINKEDIN_URL_HERE" target="_blank" rel="noopener noreferrer" class="clip-button bg-cyber-surface text-cyber-text hover:text-white font-heading font-bold py-3 px-6 flex items-center gap-3 border border-gray-700 hover:border-cyber-red transition-all group">
+            <svg class="w-5 h-5 text-cyber-muted group-hover:text-cyber-red transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+            LINKEDIN
+        </a>
+        
+        <a href="YOUR_GITHUB_URL_HERE" target="_blank" rel="noopener noreferrer" class="clip-button bg-cyber-surface text-cyber-text hover:text-white font-heading font-bold py-3 px-6 flex items-center gap-3 border border-gray-700 hover:border-cyber-red transition-all group">
+            <svg class="w-5 h-5 text-cyber-muted group-hover:text-cyber-red transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            GITHUB
+        </a>
+
+        <a href="YOUR_HTB_URL_HERE" target="_blank" rel="noopener noreferrer" class="clip-button bg-cyber-surface text-cyber-text hover:text-white font-heading font-bold py-3 px-6 flex items-center gap-3 border border-gray-700 hover:border-cyber-red transition-all group">
+            <svg class="w-5 h-5 text-cyber-muted group-hover:text-cyber-red transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            HACKTHEBOX
+        </a>
+        
+    </footer>
+
+
+</html>
